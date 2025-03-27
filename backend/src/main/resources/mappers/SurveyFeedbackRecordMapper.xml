@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.SurveyFeedbackRecordMapper">
+    <update id="update">
+        UPDATE survey_feedback_record SET
+        status=#{status}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM survey_feedback_record
+        WHERE id=#{id}
+    </delete>
+    <select id="findAll" resultType="org.one.afternoon.domain.SurveyFeedback" >
+        SELECT sfr.id id,s.name,sfr.time,p.username parent_username,p.name parent_name,
+        sfr.student_id,st.name student_name,sfr.feedback_content,sfr.status
+        FROM survey_feedback_record sfr
+        JOIN survey s ON sfr.survey_id=s.id
+        JOIN parent p ON sfr.parent_id=p.id
+        JOIN student st ON sfr.student_id = st.id
+        ORDER BY sfr.id,name
+    </select>
+    <select id="queryOne" resultType="org.one.afternoon.domain.SurveyFeedback" parameterType="org.one.afternoon.domain.SurveyFeedback">
+        SELECT sfr.id id,s.name,sfr.time,p.username parent_username,p.name parent_name,
+        sfr.student_id,st.name student_name,feedback_content,sfr.status
+        FROM survey_feedback_record sfr
+        JOIN survey s ON sfr.survey_id=s.id
+        JOIN parent p ON sfr.parent_id=p.id
+        JOIN student st ON sfr.student_id = st.id
+        <where>
+
+            <if test="name!=null and name!=''">
+                and s.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="status!=null and status!=''">
+                and sfr.status = #{status}
+            </if>
+            <if test="id!=null and id!=''">
+                and sfr.id = #{id}
+            </if>
+        </where>
+        ORDER BY sfr.id,name
+    </select>
+    <select id="getLastSurveyFeedbackRecordId" resultType="Integer">
+        select max(id) from survey_feedback_record
+    </select>
+    <select id="findById" resultType="org.one.afternoon.domain.SurveyFeedback">
+        SELECT sfr.id id,s.name,sfr.time,p.username parent_username,p.name parent_name,
+        sfr.student_id,st.name student_name,sfr.feedback_content,sfr.status
+        FROM survey_feedback_record sfr
+        JOIN survey s ON sfr.survey_id=s.id
+        JOIN parent p ON sfr.parent_id=p.id
+        JOIN student st ON sfr.student_id = st.id
+        where sfr.id = #{id}    ORDER BY sfr.id
+    </select>
+
+
+    <insert id="insert" parameterType="org.one.afternoon.domain.SurveyFeedbackRecord">
+        insert into survey_feedback_record(id,survey_id,time,parent_id,student_id,feedback_content)
+        values (#{id},#{surveyId},#{time},#{studentId},#{parentId},#{feedbackContent});
+    </insert>
+</mapper>

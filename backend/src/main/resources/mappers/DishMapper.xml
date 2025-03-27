@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.one.afternoon.mapper.DishMapper">
+    <insert id="insert">
+        insert into dishes(name,content,date)
+        values (#{name},#{content},#{date})
+    </insert>
+    <update id="update">
+        update dishes set(name,content,date)
+        value(#{name},#{content},#{date})
+    </update>
+    <delete id="deleteById">
+        delete from dishes
+        where id=#{id}
+    </delete>
+
+    <select id="getLastId" resultType="java.lang.Long">
+        select max(id) from dishes
+    </select>
+    <select id="queryOne" resultType="org.one.afternoon.domain.Dish">
+        select * from dishes
+        <where>
+            <if test="name!=null and name!=''">
+                and name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="content!=null and content!=''">
+                and content LIKE CONCAT('%',#{content},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

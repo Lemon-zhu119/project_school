@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.ActivityRegistrationMapper">
+    <update id="update">
+        UPDATE registration_record SET
+        registration_count=#{registrationCount},review_response=#{reviewResponse},status=#{status}
+    </update>
+    <delete id="deleteById">
+        DELETE  from registration_record WHERE id=#{id}
+    </delete>
+    <select id="queryOne" resultType="org.one.afternoon.domain.ActivityRegistration" parameterType="org.one.afternoon.domain.RegistrationRecord">
+        SELECT rr.id id,a.name,a.date,a.location,rr.registration_count,rr.registration_time,
+        student_id,s.name student_name,s.classes,p.username parent_username,p.name parent_name,
+        rr.status status,rr.review_response review_response
+        FROM registration_record rr
+        JOIN activity a ON rr.activity_id=a.id
+        JOIN parent p ON rr.parent_id = p.id
+        JOIN student s ON rr.student_id = s.id
+        <if test="name!=null and name!=''">
+            and a.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="studentId!=null and studentId!=''">
+            and student_id = #{studentId}
+        </if>
+    </select>
+    <select id="getLastActivityRecordId" resultType="Integer">
+        select max(id) from registration_record
+    </select>
+
+
+    <insert id="insert" parameterType="org.one.afternoon.domain.RegistrationRecord">
+        insert into registration_record(id,activity_id,parent_id,student_id,registration_count,registration_time,review_response)
+        values (#{id},#{activityId},#{parentId},#{studentId},#{registrationCount},#{registrationTime},#{reviewResponse});
+    </insert>
+
+    <select id="findAll" resultType="org.one.afternoon.domain.ActivityRegistration">
+        SELECT rr.id id,a.name,a.date,a.location,rr.registration_count,rr.registration_time,
+        student_id,s.name student_name,s.classes,p.username parent_username,p.name parent_name,
+        rr.status status,rr.review_response review_response
+        FROM registration_record rr
+        JOIN activity a ON rr.activity_id=a.id
+        JOIN parent p ON rr.parent_id = p.id
+        JOIN student s ON rr.student_id = s.id
+    </select>
+
+</mapper>

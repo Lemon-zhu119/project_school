@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.LeaveRequestMapper">
+    <update id="update" parameterType="org.one.afternoon.domain.LeaveRequestRecord">
+        UPDATE leave_course_record SET
+        review_response=#{reviewResponse},status=#{status}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM leave_course_record WHERE id=#{Id}
+    </delete>
+    <select id="findById" resultType="org.one.afternoon.domain.LeaveRequest" parameterType="java.lang.Integer">
+        SELECT lcr.id,lcr.course_id,lcr.date,lcr.reason,c.name course,c.teacher_id ,t.name teacher,
+        lcr.parent_username parent_username,
+        p.name parent_name,s.id sId,s.name student_name,
+        s.classes classes,lcr.review_response,lcr.status
+        FROM leave_course_record lcr
+        JOIN course c ON lcr.course_id=c.id
+        JOIN teacher t ON c.teacher_id=t.id
+        JOIN parent p ON lcr.parent_username=p.username
+        JOIN student s ON p.sid=s.id
+        where sId=#{sId}
+        ORDER BY id
+    </select>
+
+
+
+    <select id="getLastLeaveRequestId" resultType="Integer">
+        select max(id) from leave_course_record
+    </select>
+
+
+    <insert id="insert" parameterType="org.one.afternoon.domain.LeaveRequestRecord">
+        insert into leave_course_record(id,course_id,date,reason,review_response,parent_username,status)
+        values (#{id},#{courseId},#{date},#{reason},#{reviewResponse},#{parentUsername},#{status});
+    </insert>
+
+    <select id="query" parameterType="String" resultType="org.one.afternoon.domain.LeaveRequest">
+        SELECT lcr.id,lcr.course_id,lcr.date,lcr.reason,c.name course,c.teacher_id ,t.name teacher,
+        lcr.parent_username parent_username,
+        p.name parent_name,s.id sId,s.name student_name,
+        s.classes classes,lcr.review_response,lcr.status
+        FROM leave_course_record lcr
+        JOIN course c ON lcr.course_id=c.id
+        JOIN teacher t ON c.teacher_id=t.id
+        JOIN parent p ON lcr.parent_username=p.username
+        JOIN student s ON p.sid=s.id
+        <where>
+            <if test="reason!=null and reason!=''">
+                and lcr.reason LIKE CONCAT('%',#{reason},'%')
+            </if>
+            <if test="teacher!=null and teacher!=''">
+                and t.name LIKE CONCAT('%',#{teacher},'%')
+            </if>
+            <if test="course!=null and course!=''">
+                and c.name LIKE CONCAT('%',#{course},'%')
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+    <select id="findAll" resultType="org.one.afternoon.domain.LeaveRequest">
+        SELECT lcr.id,lcr.course_id,lcr.date,lcr.reason,c.name course,c.teacher_id ,t.name teacher,
+        lcr.parent_username parent_username,
+        p.name parent_name,s.id sId,s.name student_name,
+        s.classes classes,lcr.review_response,lcr.status
+        FROM leave_course_record lcr
+        JOIN course c ON lcr.course_id=c.id
+        JOIN teacher t ON c.teacher_id=t.id
+        JOIN parent p ON lcr.parent_username=p.username
+        JOIN student s ON p.sid=s.id
+        ORDER BY id
+    </select>
+</mapper>

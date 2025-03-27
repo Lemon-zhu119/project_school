@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.CourseScoreMapper">
+
+    <!--    字段:-->
+    <!--    @TableId(type = IdType.AUTO)-->
+    <!--    private Long id;-->
+    <!--    private String username;-->
+    <!--    private String password;-->
+    <!--    private Integer age;-->
+    <!--    private String sex;-->
+    <!--    private String role;-->
+    <!--    private Integer online;-->
+    <!--    @TableField(fill = FieldFill.INSERT) //设置自动生成-->
+    <!--    private Date createAt;-->
+    <!--    @TableField(fill = FieldFill.INSERT_UPDATE) //设置自动修改/生成-->
+    <!--    private Date updateAt;-->
+
+    <!--查询courseScore表中所有的数据-->
+    <select id="findAll" resultType="org.one.afternoon.domain.CourseScore">
+        SELECT ss.id,ss.student_id,ss.course_id,c.name course_name,score
+        FROM student_scores ss
+        JOIN course c ON ss.course_id=c.id
+    </select>
+
+    <!--模糊复合查询-->
+    <select id="queryOne" resultType="org.one.afternoon.domain.CourseScore" parameterType="org.one.afternoon.domain.CourseScore">
+        SELECT ss.id,ss.student_id,ss.course_id,c.name course_name,score
+        FROM student_scores ss
+        JOIN course c ON ss.course_id=c.id
+        <where>
+            <if test="courseName!=null and courseName!=''">
+                and c.name LIKE CONCAT('%',#{courseName},'%')
+            </if>
+            <if test="studentId!=null and studentId!=''">
+                and student_id =#{studentId}
+            </if>
+        </where>
+    </select>
+
+    <!--插入操作-->
+    <insert id="insert" parameterType="org.one.afternoon.domain.CourseScore">
+        INSERT INTO student_scores (id,student_id,course_id,score)
+        VALUES (#{id},#{studentId},#{courseId},#{score})
+    </insert>
+
+    <!--根据user_id删除-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM student_scores WHERE id=#{Id}
+    </delete>
+
+    <!--更新操作-->
+    <update id="update" parameterType="org.one.afternoon.domain.CourseScore">
+        UPDATE student_scores SET
+        student_id=#{studentId},course_id=#{courseId},score=#{score}
+        WHERE id=#{id}
+    </update>
+    <select id="findCourseScoreById" parameterType="java.lang.Integer" resultType="org.one.afternoon.domain.CourseScore">
+        SELECT ss.id,ss.student_id,c.name course_name,score
+        FROM student_scores ss
+        JOIN course c ON ss.course_id=c.id
+        where ss.student_id=#{id}
+    </select>
+    <select id="getLastId" resultType="java.lang.Integer">
+        SELECT MAX(id) FROM student_scores
+    </select>
+</mapper>

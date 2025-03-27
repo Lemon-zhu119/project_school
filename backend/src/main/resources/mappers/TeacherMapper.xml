@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.TeacherMapper">
+
+    <!--    字段:-->
+    <!--    @TableId(type = IdType.AUTO)-->
+    <!--    private Long id;-->
+    <!--    private String username;-->
+    <!--    private String password;-->
+    <!--    private Integer age;-->
+    <!--    private String sex;-->
+    <!--    private String role;-->
+    <!--    private Integer online;-->
+    <!--    @TableField(fill = FieldFill.INSERT) //设置自动生成-->
+    <!--    private Date createAt;-->
+    <!--    @TableField(fill = FieldFill.INSERT_UPDATE) //设置自动修改/生成-->
+    <!--    private Date updateAt;-->
+
+    <!--查询teacher表中所有的数据-->
+    <select id="findAll" resultType="org.one.afternoon.domain.Teacher">
+        SELECT * FROM teacher
+    </select>
+
+    <!--模糊复合查询-->
+    <select id="queryOne" resultType="org.one.afternoon.domain.Teacher" parameterType="org.one.afternoon.domain.Teacher">
+        SELECT * FROM teacher
+        <where>
+            <if test="name!=null and name!=''">
+                and name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="gender!=null and gender!=''">
+                and gender LIKE CONCAT('%',#{gender},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--插入操作-->
+    <insert id="insert" parameterType="org.one.afternoon.domain.Teacher">
+        INSERT INTO teacher (id,name,gender,age)
+        VALUES (#{id},#{name},#{gender},#{age})
+    </insert>
+
+    <!--根据user_id删除-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM teacher WHERE id=#{Id}
+    </delete>
+
+    <!--更新操作-->
+    <update id="update" parameterType="org.one.afternoon.domain.Teacher">
+        UPDATE teacher SET
+        id=#{id},name=#{name},gender=#{gender}
+        WHERE id=#{id}
+    </update>
+    <select id="findTeacherById" parameterType="java.lang.Integer" resultType="org.one.afternoon.domain.Teacher">
+        SELECT * FROM teacher
+        where id=#{id}
+    </select>
+    <select id="getLastId" resultType="java.lang.Integer">
+        SELECT MAX(id) FROM teacher
+    </select>
+</mapper>

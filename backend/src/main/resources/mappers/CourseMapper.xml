@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.CourseMapper">
+
+    <!--    字段:-->
+    <!--    @TableId(type = IdType.AUTO)-->
+    <!--    private Long id;-->
+    <!--    private String username;-->
+    <!--    private String password;-->
+    <!--    private Integer age;-->
+    <!--    private String sex;-->
+    <!--    private String role;-->
+    <!--    private Integer online;-->
+    <!--    @TableField(fill = FieldFill.INSERT) //设置自动生成-->
+    <!--    private Date createAt;-->
+    <!--    @TableField(fill = FieldFill.INSERT_UPDATE) //设置自动修改/生成-->
+    <!--    private Date updateAt;-->
+
+    <!--查询course表中所有的数据-->
+    <select id="findAll" resultType="org.one.afternoon.domain.Course">
+        SELECT c.*,t.name course_teacher_name
+        FROM course c
+        join teacher t on c.teacher_id=t.id
+    </select>
+
+    <!--模糊复合查询-->
+    <select id="queryOne" resultType="org.one.afternoon.domain.Course" parameterType="org.one.afternoon.domain.Course">
+        SELECT c.*,t.name course_teacher_name
+        FROM course c
+        join teacher t on c.teacher_id=t.id
+        <where>
+            <if test="name!=null and name!=''">
+                and c.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="courseTeacherName!=null and courseTeacherName!=''">
+                and t.name LIKE CONCAT('%',#{courseTeacherName},'%')
+            </if>
+        </where>
+    </select>
+    <select id="findCourseById" resultType="org.one.afternoon.domain.Course">
+        SELECT c.*,t.name course_teacher_name
+        FROM course c
+        join teacher t on c.teacher_id=t.id
+        where c.id=#{id}
+    </select>
+
+    <!--插入操作-->
+    <insert id="insert" parameterType="org.one.afternoon.domain.Course">
+        INSERT INTO course (id,name,teacher_id,status,content,time,location)
+        VALUES (#{id},#{name},#{teacherId},#{status},#{content},#{time},#{location})
+    </insert>
+
+    <!--根据user_id删除-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM course WHERE id=#{Id}
+    </delete>
+
+    <!--更新操作-->
+    <update id="update" parameterType="org.one.afternoon.domain.Course">
+        UPDATE course SET
+        name=#{name},teacher_id=#{teacherId},content=#{content},time=#{time},location=#{location}
+        WHERE id=#{id}
+    </update>
+</mapper>

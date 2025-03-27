@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.one.afternoon.mapper.SurveyMapper">
+
+    <!--    字段:-->
+    <!--    @TableId(type = IdType.AUTO)-->
+    <!--    private Long id;-->
+    <!--    private String username;-->
+    <!--    private String password;-->
+    <!--    private Integer age;-->
+    <!--    private String sex;-->
+    <!--    private String role;-->
+    <!--    private Integer online;-->
+    <!--    @TableField(fill = FieldFill.INSERT) //设置自动生成-->
+    <!--    private Date createAt;-->
+    <!--    @TableField(fill = FieldFill.INSERT_UPDATE) //设置自动修改/生成-->
+    <!--    private Date updateAt;-->
+
+    <!--查询survey表中所有的数据-->
+    <select id="findAll" resultType="org.one.afternoon.domain.Survey">
+        SELECT *
+        FROM survey
+    </select>
+
+    <!--模糊复合查询-->
+    <select id="queryOne" resultType="org.one.afternoon.domain.Survey" parameterType="org.one.afternoon.domain.Survey">
+        SELECT *
+        FROM survey
+        <where>
+            <if test="name!=null and name!=''">
+                and name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="content!=null and content!=''">
+                and content LIKE CONCAT('%',#{content},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getLastId" resultType="java.lang.Long">
+        SELECT MAX(id)
+        FROM survey
+    </select>
+
+    <!--插入操作-->
+    <insert id="insert" parameterType="org.one.afternoon.domain.Survey">
+        INSERT INTO survey (id,name,time,file_flag,content)
+        VALUES (#{id},#{name},#{time},#{fileFlag},#{content})
+    </insert>
+
+    <!--根据user_id删除-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM survey WHERE id=#{Id}
+    </delete>
+
+    <!--更新操作-->
+    <update id="update" parameterType="org.one.afternoon.domain.Survey">
+        UPDATE survey SET
+        name=#{name},file_flag=#{fileFlag},content=#{content}
+        WHERE id=#{id}
+    </update>
+</mapper>
