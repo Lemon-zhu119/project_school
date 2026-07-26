@@ -38,7 +38,10 @@ export default {
   name: "Login",
   data() {
     return {
-      form: {},
+      form: {
+        username:'admin',
+        password:'666666'
+      },
       rules: {
         username: [
           { required: true, message: '请输入账号', trigger: 'blur' },
@@ -61,7 +64,7 @@ export default {
             if (res.code === 20000) {
               localStorage.setItem("xm-user", JSON.stringify(res.data)) 
               this.$message.success('登录成功')
-                  location.href = '/home'    // 跳转主页   // 跳转主页
+              this.$router.push('/home')  // 使用 Vue Router 进行跳转
             } else {
               this.$message.error(res.msg)
             }

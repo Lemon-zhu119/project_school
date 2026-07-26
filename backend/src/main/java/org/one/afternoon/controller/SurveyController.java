@@ -23,7 +23,6 @@ public class SurveyController {
     @Autowired
     private RedisService redisService;
 
-    @Autowired
 
     @CrossOrigin
     @GetMapping("/all")

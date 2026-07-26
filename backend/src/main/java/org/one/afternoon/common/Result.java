@@ -33,10 +33,25 @@ public class Result<T> {
     public static <T> Result<T> success(T object) {
         Result<T> r = new Result<>();
         r.data = object;
-        r.code = 20000;
+        r.message = "查询成功";
+        r.code = 200;
         return r;
     }
 
+    /**
+     * success
+     *
+     * @param object 封装数据
+     * @param <T>    应对多种参数类型
+     * @return 响应数据
+     */
+    public static <T> Result<T> success(String msg, T object) {
+        Result<T> r = new Result<>();
+        r.data = object;
+        r.message = msg;
+        r.code = 200;
+        return r;
+    }
     /**
      * error
      *
